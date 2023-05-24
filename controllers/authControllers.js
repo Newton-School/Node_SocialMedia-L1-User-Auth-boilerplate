@@ -21,53 +21,52 @@ const decodeToken = (req, res, next) => {
 
 /*
 Instructions:
-The controller expects an HTTP POST request with the following fields in the request body: 'username', 'email', and 'password'.
+You need to implement a controller function called signup that handles the user signup process. The function receives a POST request with the user's username, email, and password. It creates a new user record in the database with the provided information, along with default values for profile picture, bio, location, website, social media handles, interests, and privacy settings. Upon successful creation of the user, it should return a JSON response with a status of "success" and the newly created user data. In case of any errors during the process, it should return a JSON response with a status of "error", an appropriate error message, and the error details.
 
-If any of these fields are missing, the controller should respond with a 400 Bad Request status and a JSON object containing a 'message' field with value 'Missing required field(s).', and a 'status' field with value 'Error'.
+Sample Input and Output:
 
-If the email is not in a valid format, the controller should respond with a 400 Bad Request status and a JSON object containing a 'message' field with value 'Invalid email format.', and a 'status' field with value 'Error'.
-
-If the username or email already exist in the database, the controller should respond with a 409 Conflict status and a JSON object containing a 'message' field with value 'Username or email already exists.', and a 'status' field with value 'Error'.
-
-If the user is successfully created, the controller should respond with a 201 Created status and a JSON object containing a 'status' field with value 'Success', and a 'data' field with the newly created user object.
-
-If there is an error during the user creation process, the controller should respond with a 500 Internal Server Error status and a JSON object containing a 'message' field with value 'Something went wrong', a 'status' field with value 'Error', and an 'error' field with the error object.
+Successful signup:
 
 Input:
+json
+Copy code
 {
-"username": "john",
-"email": "john@example.com",
-"password": "password123"
+  "username": "john_doe",
+  "email": "johndoe@example.com",
+  "password": "123456"
 }
 
 Output:
-HTTP/1.1 201 Created
-Content-Type: application/json
-
 {
-    "status": "success",
-    "data": {
-        "user": {
-            "_id": "615fc3520b32c31701280a03",
-            "username": "john_doe",
-            "email": "john.doe@example.com",
-            "profilePicture": "https://example.com/default-profile-picture.jpg",
-            "bio": "",
-            "location": "",
-            "website": "",
-            "socialMediaHandles": {
-                "twitter": "",
-                "linkedin": ""
-            },
-            "interests": [],
-            "privacySettings": {
-                "isProfilePublic": true
-            },
-            "createdAt": "2021-10-07T14:45:14.024Z",
-            "updatedAt": "2021-10-07T14:45:14.024Z",
-            "__v": 0
-        }
+  "status": "success",
+  "data": {
+    "user": {
+      "username": "john_doe",
+      "email": "johndoe@example.com",
+      "profilePicture": "https://example.com/default-profile-picture.jpg",
+      "bio": "",
+      "location": "",
+      "website": "",
+      "socialMediaHandles": {
+        "twitter": "",
+        "linkedin": ""
+      },
+      "interests": [],
+      "privacySettings": {
+        "isProfilePublic": true
+      }
     }
+  }
+}
+
+Internal Server Error:
+Input:
+(Assume a server/database error occurred during user creation)
+Output:
+{
+  "status": "error",
+  "message": "Internal Server Error",
+  "error": "Error message describing the issue"
 }
 */
 
@@ -76,56 +75,95 @@ const signup = async (req, res, next) => {
  }
  
  /*
- Instructions:
- The controller expects an HTTP POST request with the following fields in the request body: 'email' and 'password'.
- 
- If any of these fields are missing, the controller should respond with a 400 Bad Request status and a JSON object containing a 'message' field with value 'Please provide email and password', and a 'status' field with value 'Error'.
- 
- If the email or password is invalid, the controller should respond with a 401 Unauthorized status and a JSON object containing a 'message' field with value 'Invalid email or password', a 'status' field with value 'Error', and an 'error' field with the error message 'Invalid Credentials'.
- 
- If the email and password are valid, the controller should generate a JSON web token (JWT) with the user's id, username, and email as the payload, sign it with a secret key, and set the expiration time to 1 hour. The controller should respond with a 200 OK status and a JSON object containing a 'token' field with the signed JWT, and a 'status' field with value 'Success'.
- 
- If there is an error during the user lookup or password comparison process, the controller should respond with a 500 Internal Server Error status and a JSON object containing a 'message' field with value 'Something went wrong', a 'status' field with value 'Error', and an 'error' field with the error object.
- 
- Input:
- {
- "email": "john@example.com",
- "password": "password123"
- }
- 
- Output:
- {
- "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTJkMGUyMDczZjMwMzAwMTU5NjA5YjYiLCJ1c2VybmFtZSI6ImpvaG4iLCJlbWFpbCI6ImpvaG5AZXhhbXBsZS5jb20iLCJpYXQiOjE2MzA0MDYyMDIsImV4cCI6MTYzMDQxMjYwMn0.8p0y5b5a5ul5O2f4h3WzZgiLsnDkOtvJhMhqUhGDUiQ",
- "status": "Success"
- }
+Problem Statement: Login Controller
+You need to implement a controller function called login that handles user login. The function receives a POST request with the user's email and password. It validates the presence of the email and password, checks if the provided credentials match an existing user record, generates a JSON Web Token (JWT) if the credentials are valid, and returns the token as a response. If the email or password is missing, or if the provided credentials do not match any user, it should return a JSON response with an appropriate error message and status code. In case of any errors during the process, it should return a JSON response with a status of "error," an appropriate error message, and the error details.
+
+Sample Input and Output:
+Successful login:
+Input:
+{
+  "email": "johndoe@example.com",
+  "password": "123456"
+}
+Output:
+{
+  "token": "<generated JWT token>",
+  "status": "Success"
+}
+Missing Email or Password Error:
+Input:
+{
+  "email": "",
+  "password": "123456"
+}
+Output:
+{
+  "message": "Please provide email and password",
+  "status": "Error"
+}
+Invalid Credentials Error:
+
+Input:
+{
+  "email": "johndoe@example.com",
+  "password": "wrongpassword"
+}
+Output:
+{
+  "message": "Invalid email or password",
+  "status": "Error",
+  "error": "Invalid Credentials"
+}
+Internal Server Error:
+Input:
+(Assume a server/database error occurred during user retrieval, password comparison, or JWT generation)
+Output:
+json
+Copy code
+{
+  "status": "error",
+  "message": "Internal Server Error",
+  "error": "Error message describing the issue"
+}
  */
  const login = async (req, res,next) => {
     //Write your code here
  };
  
  /*
- You need to implement a logout controller which takes an authorization token as input, verifies the token, clears the cookie and logs out the user.
- 
- Instructions:
- The controller expects an HTTP POST request with an authorization token in the request header.
- 
- If the authorization token is missing, the controller should respond with a 401 Unauthorized status and a JSON object containing a 'message' field with value 'Authentication failed: Missing token.', and a 'status' field with value 'Error'.
- 
- If the authorization token is invalid, the controller should respond with a 401 Unauthorized status and a JSON object containing a 'message' field with value 'Authentication failed: Invalid token.', and a 'status' field with value 'Error'.
- 
- If the authorization token is valid, the controller should clear the cookie and respond with a 200 OK status and a JSON object containing a 'message' field with value 'Logged out successfully.', and a 'status' field with value 'Success'.
- 
- If there is an error during the JWT verification process or clearing the cookie, the controller should respond with a 500 Internal Server Error status and a JSON object containing a 'message' field with value 'Something went wrong', a 'status' field with value 'Error', and an 'error' field with the error object.
- 
- Input:
- Authorization Token, token is present in req.hearders.authorization
- 
- Output:
- {
- "message": "Logged out successfully.",
- "status": "Success"
- }
- */
+ You need to implement a logout controller which takes an authorization token as input, verifies the token, clears the cookie and logs Problem Statement: Logout Controller
+
+You need to implement a controller function called logout that handles user logout. The function receives a request containing an authorization token in the headers. It verifies the presence of the token, clears the corresponding cookie, and returns a JSON response indicating a successful logout. If the token is missing, it should return a JSON response with an appropriate error message and status code. In case of any errors during the process, it should return a JSON response with a status of "error," an appropriate error message, and the error details.
+
+Sample Input and Output:
+Successful logout:
+Input:
+Headers:
+Authorization: <token>
+Output:
+{
+  "message": "Logged out successfully.",
+  "status": "Success"
+}
+
+Missing Token Error:
+Input: <None>
+Output:
+{
+  "message": "Authentication failed: Missing token.",
+  "status": "Error"
+}
+
+Internal Server Error:
+Input:
+(Assume a server/database error occurred during token verification or cookie clearing)
+Output:
+{
+  "status": "error",
+  "message": "Internal Server Error",
+  "error": "<Error message>"
+}
+*/
  const logout = (req, res) => {
      //Write your code here
  };
