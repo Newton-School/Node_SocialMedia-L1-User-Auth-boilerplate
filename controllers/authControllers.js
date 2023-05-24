@@ -118,8 +118,6 @@ Internal Server Error:
 Input:
 (Assume a server/database error occurred during user retrieval, password comparison, or JWT generation)
 Output:
-json
-Copy code
 {
   "status": "error",
   "message": "Internal Server Error",
